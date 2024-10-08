@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사진 업로드</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    #preview {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 20px;
+    }
+    video, canvas {
+      display: none;
+    }
+    @media only screen and (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+<h1>사진 업로드</h1>
+
+<!-- 사진찍기 버튼 -->
+<button id="cameraButton">사진찍기</button>
+
+<!-- 업로드 버튼 -->
+<input type="file" id="imageInput" accept="image/*">
+
+<!-- 사진 미리보기 -->
+<img id="preview" alt="사진 미리보기" />
+
+<video id="video" width="400" height="300" autoplay></video>
+<canvas id="canvas" width="400" height="300"></canvas>
+
+<script>
+  // 이미지 파일 업로드 핸들러
+  document.getElementById('imageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      document.getElementById('preview').src = e.target.result;
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // 카메라 기능 구현
+  const cameraButton = document.getElementById('cameraButton');
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const preview = document.getElementById('preview');
+
+  cameraButton.addEventListener('click', async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.style.display = 'block';
+      video.srcObject = stream;
+
+      setTimeout(() => {
+        // 사진 캡처
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // 비디오 정지
+        stream.getTracks().forEach(track => track.stop());
+        video.style.display = 'none';
+
+        // 캡처된 이미지 미리보기
+        const imageUrl = canvas.toDataURL('image/png');
+        preview.src = imageUrl;
+      }, 3000);  // 3초 후 사진 캡처
+    } catch (error) {
+      console.error('카메라 접근이 거부되었습니다:', error);
+    }
+  });
+
+  async function uploadImage() {
+    const fileInput = document.getElementById("imageInput");
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    const response = await fetch('/upload/image', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.text();
+    alert(result);
+  }
+</script>
+</body>
+</html>
