@@ -16,6 +16,11 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public boolean authenticate(String username, String password) {
+        User user = userRepository.findByUsername(username);
+        return user != null && passwordEncoder.matches(password, user.getPassword());
+    }
+
     public void registerUser(UserDTO userDto) {
         User user = new User();
         user.setUsername(userDto.getUsername());
