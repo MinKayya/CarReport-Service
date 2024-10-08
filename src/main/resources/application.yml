@@ -3,7 +3,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/test  # MySQL 서버와 데이터베이스 이름 설정
     username: root                               # MySQL 사용자명
-    password: asd1234                               # MySQL 비밀번호
+    password: *********                               # MySQL 비밀번호
     driver-class-name: com.mysql.cj.jdbc.Driver         # MySQL 드라이버 클래스
   security:
     user:
@@ -13,9 +13,9 @@ spring:
       client:
         registration:
           google:
-            client-id: 325422984196-f5ipjo4a1olc6uccqtbhfm64je2ka5je.apps.googleusercontent.com
-            client-secret: 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
-            redirect-uri: "http://localhost:20001/login/oauth2/code/google"
+            client-id: *********
+            client-secret: *********
+            redirect-uri: *********
             scope:
               - email
               - profile
