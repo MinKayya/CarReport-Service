@@ -19,12 +19,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/", "/login**", "/error").permitAll()  // 예전 'antMatchers' 대신 'requestMatchers' 사용
+                        .requestMatchers("/", "/login**", "/error", "/resources/**", "/static/**", "/register**").permitAll()  // 예전 'antMatchers' 대신 'requestMatchers' 사용
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
+                        .defaultSuccessUrl("/upload", true)
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/").permitAll()

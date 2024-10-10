@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/")
 public class AuthController {
 
     @Autowired
@@ -21,14 +21,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password) {
-        // 로그인 처리 로직 (간단하게 인증 확인)
         if (userService.authenticate(username, password)) {
-            return "redirect:/upload"; // 로그인 성공 시 대시보드로 리다이렉트
+            return "upload";  // 로그인 성공 시 업로드 페이지로 이동
         }
-        return "login"; // 로그인 실패 시 다시 로그인 페이지로
+        return "login";  // 로그인 실패 시 다시 로그인 페이지
     }
 
-    @GetMapping("/register")
+    @RequestMapping("/upload")
+    public String showUploadPage() {
+        return "upload"; // signup.html로 이동
+    }
+
+    @RequestMapping("/register")
     public String showSignupPage() {
         return "signup"; // signup.html로 이동
     }
@@ -36,6 +40,6 @@ public class AuthController {
     @PostMapping("/register")
     public String registerUser(@RequestParam String username, @RequestParam String password) {
         userService.registerUser(new UserDTO(username, password));
-        return "redirect:/auth/login";
+        return "redirect:/login";  // 회원가입 후 로그인 페이지로 리디렉션
     }
 }
